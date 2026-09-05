@@ -34,8 +34,17 @@ Respond with ONLY valid JSON (no markdown, no extra text) in exactly this shape:
       "mapsQuery": "search-friendly text like 'Place Name, ${destination}'"
     }
   ],
-  "localFood": [
-    { "name": "", "area": "", "description": "", "whereToFind": "", "mapsQuery": "" }
+    "localFood": [
+    {
+      "name": "",
+      "type": "near a hidden gem OR famous cultural classic",
+      "nearSpot": "name of the hiddenGem or photographySpot from the lists above that this is closest to (or 'city-wide' if it's a famous spot everyone should know)",
+      "area": "",
+      "mustTryDish": "the one dish this place is known for",
+      "description": "",
+      "whereToFind": "",
+      "mapsQuery": ""
+    }
   ],
   "photographySpots": [
     { "name": "", "area": "", "description": "", "bestTime": "", "mapsQuery": "" }
@@ -61,6 +70,12 @@ Do NOT fix the number of items to exactly 3. Decide a sensible number based on h
 For every item, "area" must be a real, findable neighborhood, street, or landmark name in ${destination} (not vague like "downtown" or "somewhere local") so it can be searched on a map. "mapsQuery" should combine the place name and area in a way that would work well as a Google Maps search.
 
 Keep descriptions short (1-2 sentences). Include 2-3 items in smartSavings.suggestions, and be honest and realistic comparing tourist vs. local costs.
+
+For localFood specifically:
+1. First decide the hiddenGems and photographySpots for this trip.
+2. Then recommend food spots that are actually within short walking/travel distance of those specific spots or areas — so travelers can eat nearby without a separate trip across town. Set "nearSpot" to match the exact name of the related gem/spot.
+3. In addition, include 1-2 famous, iconic, must-try food experiences of ${destination} as a whole (the dish or eatery every first-timer should know about, for cultural context) — even if not near a specific gem. Mark these with type "famous cultural classic" and nearSpot "city-wide".
+4. Do not recommend food spots that require significant extra travel away from the other recommended areas unless they're a "famous cultural classic".
 `;
 
   const response = await ai.models.generateContent({
