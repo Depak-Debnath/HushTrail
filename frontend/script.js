@@ -37,7 +37,6 @@ tripForm.addEventListener("submit", async (e) => {
     } else {
       renderResults(data);
     }
-
   } catch (error) {
     resultsSection.innerHTML = `<p>⚠️ Could not connect to the server. Is the backend running?</p>`;
     console.error(error);
@@ -47,13 +46,14 @@ tripForm.addEventListener("submit", async (e) => {
   }
 });
 
-
 function mapsLink(query) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
 function renderCardList(items, extraFieldLabel, extraField) {
-  return items.map(item => `
+  return items
+    .map(
+      (item) => `
     <div class="spot-card">
       <div class="spot-header">
         <h4>${item.name}</h4>
@@ -64,7 +64,9 @@ function renderCardList(items, extraFieldLabel, extraField) {
       ${extraField && item[extraField] ? `<p class="extra"><strong>${extraFieldLabel}:</strong> ${item[extraField]}</p>` : ""}
       ${item.mapsQuery ? `<a href="${mapsLink(item.mapsQuery)}" target="_blank" rel="noopener noreferrer">Open in Maps →</a>` : ""}
     </div>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 function renderResults(data) {
@@ -74,8 +76,23 @@ function renderResults(data) {
     <h3>🗺️ Hidden Gems</h3>
     <div class="card-grid">${renderCardList(data.hiddenGems, "Why local", "whyLocal")}</div>
 
-    <h3>🍜 Local Food</h3>
-    <div class="card-grid">${renderCardList(data.localFood, "Where to find", "whereToFind")}</div>
+    <h3>🍜 Local Food (near your spots)</h3>
+    <div class="card-grid">${data.localFood
+      .map(
+        (item) => `
+      <div class="spot-card">
+        <div class="spot-header">
+          <h4>${item.name}</h4>
+          <span class="badge">${item.type === "famous cultural classic" ? "🌟 Must-try" : "📍 Near " + item.nearSpot}</span>
+        </div>
+        <p class="area">📍 ${item.area}</p>
+        <p><strong>Must try:</strong> ${item.mustTryDish}</p>
+        <p>${item.description}</p>
+        <p class="extra"><strong>Where to find:</strong> ${item.whereToFind}</p>
+        <a href="${mapsLink(item.mapsQuery)}" target="_blank" rel="noopener noreferrer">Open in Maps →</a>
+      </div>`,
+      )
+      .join("")}</div>
 
     <h3>📸 Photography Spots</h3>
     <div class="card-grid">${renderCardList(data.photographySpots, "Best time", "bestTime")}</div>
@@ -97,7 +114,7 @@ function renderResults(data) {
       <p><strong>Typical tourist cost:</strong> ${data.smartSavings.touristCostEstimate}</p>
       <p><strong>Your local-focused cost:</strong> ${data.smartSavings.localCostEstimate}</p>
       <p class="savings-highlight">You could save: ${data.smartSavings.estimatedSavings}</p>
-      <ul>${data.smartSavings.suggestions.map(s => `<li>${s}</li>`).join("")}</ul>
+      <ul>${data.smartSavings.suggestions.map((s) => `<li>${s}</li>`).join("")}</ul>
     </div>
   `;
 }
