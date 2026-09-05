@@ -25,36 +25,42 @@ Respond with ONLY valid JSON (no markdown, no extra text) in exactly this shape:
 {
   "summary": "short 1-2 sentence overview of the trip plan",
   "hiddenGems": [
-    { "name": "", "description": "", "whyLocal": "" }
+    {
+      "name": "",
+      "type": "hidden gem OR famous spot with a local secret",
+      "area": "specific neighborhood, locality, or nearest landmark in ${destination}",
+      "description": "",
+      "whyLocal": "",
+      "mapsQuery": "search-friendly text like 'Place Name, ${destination}'"
+    }
   ],
   "localFood": [
-    { "name": "", "description": "", "whereToFind": "" }
+    { "name": "", "area": "", "description": "", "whereToFind": "", "mapsQuery": "" }
   ],
   "photographySpots": [
-    { "name": "", "description": "", "bestTime": "" }
+    { "name": "", "area": "", "description": "", "bestTime": "", "mapsQuery": "" }
   ],
   "localEvents": [
-    { "name": "", "description": "" }
+    { "name": "", "area": "", "description": "", "mapsQuery": "" }
   ],
-    "budgetBreakdown": {
-    "accommodation": "",
-    "food": "",
-    "transport": "",
-    "activities": "",
-    "total": ""
+  "budgetBreakdown": {
+    "accommodation": "", "food": "", "transport": "", "activities": "", "total": ""
   },
   "smartSavings": {
-    "touristCostEstimate": "estimated cost if they only visited popular tourist spots instead",
-    "localCostEstimate": "estimated cost using these local/hidden recommendations",
-    "estimatedSavings": "the money difference, as a number/currency string",
-    "suggestions": [
-      "1-2 short ideas for what to do with the saved money, e.g. extend the trip, try a paid local experience, save it"
-    ]
+    "touristCostEstimate": "",
+    "localCostEstimate": "",
+    "estimatedSavings": "",
+    "suggestions": [""]
   }
 }
 
-Include 3 items in each list, and 2 items in smartSavings.suggestions. Keep descriptions short (1-2 sentences).
-For smartSavings, compare realistic costs: a typical tourist itinerary vs. this local-focused plan, and be honest and reasonable with the numbers based on the destination and budget given.
+For hiddenGems specifically: include a MIX — some genuinely off-the-beaten-path spots most tourists miss, AND some famous/well-known areas of ${destination}, but paired with a local secret about them (a less-crowded corner, a local-only timing, a nearby spot most tourists walk past). Mark each one's "type" accordingly.
+
+Do NOT fix the number of items to exactly 3. Decide a sensible number based on how much ${destination} actually offers for these interests — a small town might only have 2-4 genuine items per category, while a large city could have 6-8. Never pad the list with repetitive or low-quality filler just to hit a number.
+
+For every item, "area" must be a real, findable neighborhood, street, or landmark name in ${destination} (not vague like "downtown" or "somewhere local") so it can be searched on a map. "mapsQuery" should combine the place name and area in a way that would work well as a Google Maps search.
+
+Keep descriptions short (1-2 sentences). Include 2-3 items in smartSavings.suggestions, and be honest and realistic comparing tourist vs. local costs.
 `;
 
   const response = await ai.models.generateContent({
