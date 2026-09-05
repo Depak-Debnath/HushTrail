@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const { planTrip } = require("./geminiService");
 
 const app = express();
 
@@ -12,15 +13,17 @@ app.get("/", (req, res) => {
   res.json({ message: "HushTrail backend is running 🚀" });
 });
 
-// Temporary test route — proves frontend can talk to backend
-app.post("/api/plan-trip", (req, res) => {
-  const { destination, interests, budget, duration, travelers } = req.body;
+// API test route — proves frontend can talk to backend
+app.post("/api/plan-trip", async (req, res) => {
+  const { destination, interests, budget, travelers, duration } = req.body;
 
-  console.log("Received trip request:", req.body);
-
-  res.json({
-    message: `Got it! Planning a ${duration}-day trip to ${destination} for ${travelers} traveler(s), interested in ${interests}, budget ${budget}.`
-  });
+  try {
+    const tripPlan = await planTrip({ destination, interests, budget, travelers, duration });
+    res.json(tripPlan);
+  } catch (error) {
+    console.error("Gemini error:", error);
+    res.status(500).json({ error: "Failed to generate trip plan. Please try again." });
+  }
 });
 
 const PORT = process.env.PORT || 5000;

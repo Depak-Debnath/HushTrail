@@ -11,6 +11,7 @@ tripForm.addEventListener("submit", async (e) => {
   const interests = document.getElementById("interests").value;
   const budget = document.getElementById("budget").value;
   const duration = document.getElementById("duration").value;
+  const travelers = document.getElementById("travelers").value;
 
   // Show loading, hide old results
   loadingSection.classList.remove("hidden");
@@ -20,12 +21,18 @@ tripForm.addEventListener("submit", async (e) => {
     const response = await fetch(`${BACKEND_URL}/api/plan-trip`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ destination, interests, budget, duration }),
+      body: JSON.stringify({
+        destination,
+        interests,
+        budget,
+        duration,
+        travelers,
+      }),
     });
 
     const data = await response.json();
 
-    resultsSection.innerHTML = `<p>${data.message}</p>`;
+    resultsSection.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
   } catch (error) {
     resultsSection.innerHTML = `<p>⚠️ Could not connect to the server. Is the backend running?</p>`;
     console.error(error);
