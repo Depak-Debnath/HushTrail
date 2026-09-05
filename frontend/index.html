@@ -1,49 +1,73 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HushTrail — Travel like a local, not a tourist</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HushTrail — Travel like a local, not a tourist</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <h1>🌍 HushTrail</h1>
+      <p class="tagline">Travel like a local, not a tourist.</p>
+    </header>
 
-  <header class="hero">
-    <h1>🌍 HushTrail</h1>
-    <p class="tagline">Travel like a local, not a tourist.</p>
-  </header>
+    <main>
+      <section class="form-card">
+        <h2>Plan Your Trip</h2>
+        <form id="tripForm">
+          <label for="destination">Destination</label>
+          <input
+            type="text"
+            id="destination"
+            placeholder="e.g. Jaipur, India"
+            required
+          />
 
-  <main>
-    <section class="form-card">
-      <h2>Plan Your Trip</h2>
-      <form id="tripForm">
-        <label for="destination">Destination</label>
-        <input type="text" id="destination" placeholder="e.g. Jaipur, India" required />
+          <label for="interests">Interests</label>
+          <input
+            type="text"
+            id="interests"
+            placeholder="e.g. food, photography, history"
+            required
+          />
 
-        <label for="interests">Interests</label>
-        <input type="text" id="interests" placeholder="e.g. food, photography, history" required />
+          <label for="budget">Budget (in ₹ or $)</label>
+          <input type="text" id="budget" placeholder="e.g. 15000" required />
 
-        <label for="budget">Budget (in ₹ or $)</label>
-        <input type="text" id="budget" placeholder="e.g. 15000" required />
+          <label for="travelers">Number of Travelers</label>
+          <input
+            type="number"
+            id="travelers"
+            min="1"
+            placeholder="e.g. 2"
+            required
+          />
 
-        <label for="duration">Trip Duration (days)</label>
-        <input type="number" id="duration" min="1" placeholder="e.g. 3" required />
+          <label for="duration">Trip Duration (days)</label>
+          <input
+            type="number"
+            id="duration"
+            min="1"
+            placeholder="e.g. 3"
+            required
+          />
 
-        <button type="submit">✨ Discover Hidden Gems</button>
-      </form>
-    </section>
+          <button type="submit">✨ Discover Hidden Gems</button>
+        </form>
+      </section>
 
-    <section id="loading" class="hidden">
-      <p>🔍 Finding hidden gems for you...</p>
-    </section>
+      <section id="loading" class="hidden">
+        <p>🔍 Finding hidden gems for you...</p>
+      </section>
 
-    <section id="results" class="hidden"></section>
-  </main>
+      <section id="results" class="hidden"></section>
+    </main>
 
-  <footer>
-    <p>Made with 🤍 for travelers who like getting lost.</p>
-  </footer>
+    <footer>
+      <p>Made with 🤍 for travelers who like getting lost.</p>
+    </footer>
 
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

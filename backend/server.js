@@ -14,12 +14,12 @@ app.get("/", (req, res) => {
 
 // Temporary test route — proves frontend can talk to backend
 app.post("/api/plan-trip", (req, res) => {
-  const { destination, interests, budget, duration } = req.body;
+  const { destination, interests, budget, duration, travelers } = req.body;
 
   console.log("Received trip request:", req.body);
 
   res.json({
-    message: `Got it! Planning a ${duration}-day trip to ${destination} for someone interested in ${interests}, budget ${budget}.`
+    message: `Got it! Planning a ${duration}-day trip to ${destination} for ${travelers} traveler(s), interested in ${interests}, budget ${budget}.`
   });
 });
 
