@@ -32,7 +32,12 @@ tripForm.addEventListener("submit", async (e) => {
 
     const data = await response.json();
 
-    resultsSection.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    if (data.error) {
+      resultsSection.innerHTML = `<p>⚠️ ${data.error}</p>`;
+    } else {
+      renderResults(data);
+    }
+
   } catch (error) {
     resultsSection.innerHTML = `<p>⚠️ Could not connect to the server. Is the backend running?</p>`;
     console.error(error);
@@ -41,3 +46,58 @@ tripForm.addEventListener("submit", async (e) => {
     resultsSection.classList.remove("hidden");
   }
 });
+
+
+function mapsLink(query) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
+function renderCardList(items, extraFieldLabel, extraField) {
+  return items.map(item => `
+    <div class="spot-card">
+      <div class="spot-header">
+        <h4>${item.name}</h4>
+        ${item.type ? `<span class="badge">${item.type}</span>` : ""}
+      </div>
+      ${item.area ? `<p class="area">📍 ${item.area}</p>` : ""}
+      <p>${item.description}</p>
+      ${extraField && item[extraField] ? `<p class="extra"><strong>${extraFieldLabel}:</strong> ${item[extraField]}</p>` : ""}
+      ${item.mapsQuery ? `<a href="${mapsLink(item.mapsQuery)}" target="_blank" rel="noopener noreferrer">Open in Maps →</a>` : ""}
+    </div>
+  `).join("");
+}
+
+function renderResults(data) {
+  resultsSection.innerHTML = `
+    <p class="summary">${data.summary}</p>
+
+    <h3>🗺️ Hidden Gems</h3>
+    <div class="card-grid">${renderCardList(data.hiddenGems, "Why local", "whyLocal")}</div>
+
+    <h3>🍜 Local Food</h3>
+    <div class="card-grid">${renderCardList(data.localFood, "Where to find", "whereToFind")}</div>
+
+    <h3>📸 Photography Spots</h3>
+    <div class="card-grid">${renderCardList(data.photographySpots, "Best time", "bestTime")}</div>
+
+    <h3>🎉 Local Events</h3>
+    <div class="card-grid">${renderCardList(data.localEvents)}</div>
+
+    <h3>💰 Budget Breakdown</h3>
+    <div class="budget-grid">
+      <div><span>Accommodation</span><strong>${data.budgetBreakdown.accommodation}</strong></div>
+      <div><span>Food</span><strong>${data.budgetBreakdown.food}</strong></div>
+      <div><span>Transport</span><strong>${data.budgetBreakdown.transport}</strong></div>
+      <div><span>Activities</span><strong>${data.budgetBreakdown.activities}</strong></div>
+      <div class="total"><span>Total</span><strong>${data.budgetBreakdown.total}</strong></div>
+    </div>
+
+    <h3>✨ Smart Savings</h3>
+    <div class="savings-card">
+      <p><strong>Typical tourist cost:</strong> ${data.smartSavings.touristCostEstimate}</p>
+      <p><strong>Your local-focused cost:</strong> ${data.smartSavings.localCostEstimate}</p>
+      <p class="savings-highlight">You could save: ${data.smartSavings.estimatedSavings}</p>
+      <ul>${data.smartSavings.suggestions.map(s => `<li>${s}</li>`).join("")}</ul>
+    </div>
+  `;
+}

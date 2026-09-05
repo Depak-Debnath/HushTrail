@@ -8,10 +8,14 @@
   --radius: 12px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: "Segoe UI", system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
@@ -24,8 +28,14 @@ body {
   color: white;
 }
 
-.hero h1 { font-size: 2.2rem; margin-bottom: 8px; }
-.tagline { font-size: 1.1rem; opacity: 0.9; }
+.hero h1 {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+.tagline {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
 
 main {
   max-width: 640px;
@@ -37,10 +47,13 @@ main {
   background: var(--card-bg);
   padding: 28px;
   border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-.form-card h2 { margin-bottom: 16px; font-size: 1.3rem; }
+.form-card h2 {
+  margin-bottom: 16px;
+  font-size: 1.3rem;
+}
 
 form label {
   display: block;
@@ -77,9 +90,13 @@ button {
   transition: background 0.2s;
 }
 
-button:hover { background: var(--primary-dark); }
+button:hover {
+  background: var(--primary-dark);
+}
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 #loading {
   text-align: center;
@@ -92,7 +109,7 @@ button:hover { background: var(--primary-dark); }
   background: var(--card-bg);
   padding: 20px;
   border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 footer {
@@ -102,7 +119,126 @@ footer {
   font-size: 0.85rem;
 }
 
+.summary {
+  font-size: 1.05rem;
+  margin-bottom: 20px;
+  color: var(--muted);
+}
+
+#results h3 {
+  margin: 28px 0 12px;
+  font-size: 1.1rem;
+}
+
+.card-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.spot-card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 14px;
+  background: #fafaf8;
+}
+
+.spot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.spot-header h4 {
+  font-size: 1rem;
+}
+
+.badge {
+  font-size: 0.7rem;
+  background: var(--primary);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.area {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 4px 0;
+}
+.extra {
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+
+.spot-card a {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.spot-card a:hover {
+  text-decoration: underline;
+}
+
+.budget-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.budget-grid div {
+  display: flex;
+  justify-content: space-between;
+  background: #fafaf8;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+.budget-grid .total {
+  grid-column: span 2;
+  background: var(--primary);
+  color: white;
+}
+
+.savings-card {
+  background: #eafaf3;
+  border: 1px solid #b7ebd1;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.savings-highlight {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin: 8px 0;
+}
+
+.savings-card ul {
+  margin-left: 18px;
+  margin-top: 6px;
+}
+
+
 @media (max-width: 480px) {
-  .hero h1 { font-size: 1.8rem; }
-  main { margin-top: -16px; }
+  .hero { padding: 36px 16px 28px; }
+  .hero h1 { font-size: 1.6rem; }
+  .tagline { font-size: 0.95rem; }
+
+  main { margin-top: -16px; padding: 0 14px; }
+  .form-card { padding: 20px; }
+
+  .budget-grid {
+    grid-template-columns: 1fr;
+  }
+  .budget-grid .total {
+    grid-column: span 1;
+  }
+
+  .spot-header h4 { font-size: 0.95rem; }
 }
