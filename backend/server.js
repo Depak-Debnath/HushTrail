@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { planTrip, askTripAssistant } = require("./geminiService");
+const { geocodePlaces } = require("./geocodeService");
 
 const app = express();
 
@@ -43,6 +44,24 @@ app.post("/api/trip-assistant", async (req, res) => {
     res.status(500).json({ error: "Could not get an answer right now. Try again." });
   }
 });
+
+
+app.post("/api/geocode", async (req, res) => {
+  const { items } = req.body;
+
+  if (!items || !items.length) {
+    return res.status(400).json({ error: "No items to geocode." });
+  }
+
+  try {
+    const geocoded = await geocodePlaces(items);
+    res.json({ places: geocoded });
+  } catch (error) {
+    console.error("Geocoding error:", error);
+    res.status(500).json({ error: "Could not load map locations." });
+  }
+});
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

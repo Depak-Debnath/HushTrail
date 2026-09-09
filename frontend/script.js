@@ -91,6 +91,7 @@ function renderResults(data) {
       <button class="tab-btn" data-tab="photo">📸 Photo</button>
       <button class="tab-btn" data-tab="events">🎉 Events</button>
       <button class="tab-btn" data-tab="budget">💰 Budget</button>
+      <button class="tab-btn" data-tab="map">🗺️ Map</button>
     </div>
 
     <div class="tab-panel" data-panel="gems">
@@ -138,10 +139,17 @@ function renderResults(data) {
         <ul>${data.smartSavings.suggestions.map(s => `<li>${s}</li>`).join("")}</ul>
       </div>
     </div>
+
+    <div class="tab-panel hidden" data-panel="map">
+      <div id="mapContainer" style="height: 400px; border-radius: 10px;"></div>
+    </div>
   `;
 
   setupTabs();
 }
+
+let mapLoaded = false;
+let leafletMap = null;
 
 function setupTabs() {
   const tabButtons = resultsSection.querySelectorAll(".tab-btn");
@@ -154,8 +162,56 @@ function setupTabs() {
 
       btn.classList.add("active");
       resultsSection.querySelector(`[data-panel="${btn.dataset.tab}"]`).classList.remove("hidden");
+
+      if (btn.dataset.tab === "map" && !mapLoaded) {
+        loadMap();
+      }
     });
   });
+}
+
+async function loadMap() {
+  const mapContainer = document.getElementById("mapContainer");
+  mapContainer.innerHTML = "Loading map...";
+
+  const allItems = [
+    ...currentTripPlan.hiddenGems,
+    ...currentTripPlan.localFood,
+    ...currentTripPlan.photographySpots,
+  ];
+
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/geocode`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: allItems }),
+    });
+
+    const data = await response.json();
+    mapContainer.innerHTML = "";
+
+    if (!data.places || !data.places.length) {
+      mapContainer.innerHTML = "<p>Could not load map locations.</p>";
+      return;
+    }
+
+    leafletMap = L.map("mapContainer").setView([data.places[0].lat, data.places[0].lng], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors",
+    }).addTo(leafletMap);
+
+    data.places.forEach(place => {
+      L.marker([place.lat, place.lng])
+        .addTo(leafletMap)
+        .bindPopup(`<strong>${place.name}</strong><br>${place.description}`);
+    });
+
+    mapLoaded = true;
+  } catch (error) {
+    mapContainer.innerHTML = "<p>⚠️ Failed to load map.</p>";
+    console.error(error);
+  }
 }
 
 
