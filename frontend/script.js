@@ -43,6 +43,7 @@ tripForm.addEventListener("submit", async (e) => {
       resultsSection.innerHTML = `<p>⚠️ ${data.error}</p>`;
     } else {
       renderResults(data);
+      resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
       currentTripPlan = data;
       chatHistory = [];
       chatMessages.innerHTML = "";
@@ -84,50 +85,77 @@ function renderResults(data) {
   resultsSection.innerHTML = `
     <p class="summary">${data.summary}</p>
 
-    <h3>🗺️ Hidden Gems</h3>
-    <div class="card-grid">${renderCardList(data.hiddenGems, "Why local", "whyLocal")}</div>
-
-    <h3>🍜 Local Food (near your spots)</h3>
-    <div class="card-grid">${data.localFood
-      .map(
-        (item) => `
-      <div class="spot-card">
-        <div class="spot-header">
-          <h4>${item.name}</h4>
-          <span class="badge">${item.type === "famous cultural classic" ? "🌟 Must-try" : "📍 Near " + item.nearSpot}</span>
-        </div>
-        <p class="area">📍 ${item.area}</p>
-        <p><strong>Must try:</strong> ${item.mustTryDish}</p>
-        <p>${item.description}</p>
-        <p class="extra"><strong>Where to find:</strong> ${item.whereToFind}</p>
-        <a href="${mapsLink(item.mapsQuery)}" target="_blank" rel="noopener noreferrer">Open in Maps →</a>
-      </div>`,
-      )
-      .join("")}</div>
-
-    <h3>📸 Photography Spots</h3>
-    <div class="card-grid">${renderCardList(data.photographySpots, "Best time", "bestTime")}</div>
-
-    <h3>🎉 Local Events</h3>
-    <div class="card-grid">${renderCardList(data.localEvents)}</div>
-
-    <h3>💰 Budget Breakdown</h3>
-    <div class="budget-grid">
-      <div><span>Accommodation</span><strong>${data.budgetBreakdown.accommodation}</strong></div>
-      <div><span>Food</span><strong>${data.budgetBreakdown.food}</strong></div>
-      <div><span>Transport</span><strong>${data.budgetBreakdown.transport}</strong></div>
-      <div><span>Activities</span><strong>${data.budgetBreakdown.activities}</strong></div>
-      <div class="total"><span>Total</span><strong>${data.budgetBreakdown.total}</strong></div>
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="gems">🗺️ Gems</button>
+      <button class="tab-btn" data-tab="food">🍜 Food</button>
+      <button class="tab-btn" data-tab="photo">📸 Photo</button>
+      <button class="tab-btn" data-tab="events">🎉 Events</button>
+      <button class="tab-btn" data-tab="budget">💰 Budget</button>
     </div>
 
-    <h3>✨ Smart Savings</h3>
-    <div class="savings-card">
-      <p><strong>Typical tourist cost:</strong> ${data.smartSavings.touristCostEstimate}</p>
-      <p><strong>Your local-focused cost:</strong> ${data.smartSavings.localCostEstimate}</p>
-      <p class="savings-highlight">You could save: ${data.smartSavings.estimatedSavings}</p>
-      <ul>${data.smartSavings.suggestions.map((s) => `<li>${s}</li>`).join("")}</ul>
+    <div class="tab-panel" data-panel="gems">
+      <div class="card-grid">${renderCardList(data.hiddenGems, "Why local", "whyLocal")}</div>
+    </div>
+
+    <div class="tab-panel hidden" data-panel="food">
+      <div class="card-grid">${data.localFood.map(item => `
+        <div class="spot-card">
+          <div class="spot-header">
+            <h4>${item.name}</h4>
+            <span class="badge">${item.type === "famous cultural classic" ? "🌟 Must-try" : "📍 Near " + item.nearSpot}</span>
+          </div>
+          <p class="area">📍 ${item.area}</p>
+          <p><strong>Must try:</strong> ${item.mustTryDish}</p>
+          <p>${item.description}</p>
+          <p class="extra"><strong>Where to find:</strong> ${item.whereToFind}</p>
+          <a href="${mapsLink(item.mapsQuery)}" target="_blank" rel="noopener noreferrer">Open in Maps →</a>
+        </div>
+      `).join("")}</div>
+    </div>
+
+    <div class="tab-panel hidden" data-panel="photo">
+      <div class="card-grid">${renderCardList(data.photographySpots, "Best time", "bestTime")}</div>
+    </div>
+
+    <div class="tab-panel hidden" data-panel="events">
+      <div class="card-grid">${renderCardList(data.localEvents)}</div>
+    </div>
+
+    <div class="tab-panel hidden" data-panel="budget">
+      <div class="budget-grid">
+        <div><span>Accommodation</span><strong>${data.budgetBreakdown.accommodation}</strong></div>
+        <div><span>Food</span><strong>${data.budgetBreakdown.food}</strong></div>
+        <div><span>Transport</span><strong>${data.budgetBreakdown.transport}</strong></div>
+        <div><span>Activities</span><strong>${data.budgetBreakdown.activities}</strong></div>
+        <div class="total"><span>Total</span><strong>${data.budgetBreakdown.total}</strong></div>
+      </div>
+
+      <h4 class="savings-title">✨ Smart Savings</h4>
+      <div class="savings-card">
+        <p><strong>Typical tourist cost:</strong> ${data.smartSavings.touristCostEstimate}</p>
+        <p><strong>Your local-focused cost:</strong> ${data.smartSavings.localCostEstimate}</p>
+        <p class="savings-highlight">You could save: ${data.smartSavings.estimatedSavings}</p>
+        <ul>${data.smartSavings.suggestions.map(s => `<li>${s}</li>`).join("")}</ul>
+      </div>
     </div>
   `;
+
+  setupTabs();
+}
+
+function setupTabs() {
+  const tabButtons = resultsSection.querySelectorAll(".tab-btn");
+  const tabPanels = resultsSection.querySelectorAll(".tab-panel");
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabButtons.forEach(b => b.classList.remove("active"));
+      tabPanels.forEach(p => p.classList.add("hidden"));
+
+      btn.classList.add("active");
+      resultsSection.querySelector(`[data-panel="${btn.dataset.tab}"]`).classList.remove("hidden");
+    });
+  });
 }
 
 
