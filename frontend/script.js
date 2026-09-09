@@ -1,6 +1,13 @@
 const tripForm = document.getElementById("tripForm");
 const loadingSection = document.getElementById("loading");
 const resultsSection = document.getElementById("results");
+const assistantSection = document.getElementById("assistant");
+const assistantForm = document.getElementById("assistantForm");
+const assistantInput = document.getElementById("assistantInput");
+const chatMessages = document.getElementById("chatMessages");
+
+let currentTripPlan = null;
+let chatHistory = [];
 
 const BACKEND_URL = "http://localhost:5000";
 
@@ -36,6 +43,10 @@ tripForm.addEventListener("submit", async (e) => {
       resultsSection.innerHTML = `<p>⚠️ ${data.error}</p>`;
     } else {
       renderResults(data);
+      currentTripPlan = data;
+      chatHistory = [];
+      chatMessages.innerHTML = "";
+      assistantSection.classList.remove("hidden");
     }
   } catch (error) {
     resultsSection.innerHTML = `<p>⚠️ Could not connect to the server. Is the backend running?</p>`;
@@ -117,4 +128,50 @@ function renderResults(data) {
       <ul>${data.smartSavings.suggestions.map((s) => `<li>${s}</li>`).join("")}</ul>
     </div>
   `;
+}
+
+
+assistantForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const question = assistantInput.value;
+  addChatMessage("user", question);
+  assistantInput.value = "";
+
+  addChatMessage("assistant", "Thinking...", true);
+
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/trip-assistant`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tripPlan: currentTripPlan, question, history: chatHistory }),
+    });
+
+    const data = await response.json();
+    removeTypingMessage();
+
+    const answer = data.answer || data.error || "Something went wrong.";
+    addChatMessage("assistant", answer);
+
+    chatHistory.push({ role: "user", text: question });
+    chatHistory.push({ role: "assistant", text: answer });
+  } catch (error) {
+    removeTypingMessage();
+    addChatMessage("assistant", "⚠️ Could not reach the server.");
+    console.error(error);
+  }
+});
+
+function addChatMessage(role, text, isTyping = false) {
+  const bubble = document.createElement("div");
+  bubble.className = `chat-bubble ${role}`;
+  if (isTyping) bubble.id = "typingBubble";
+  bubble.textContent = text;
+  chatMessages.appendChild(bubble);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeTypingMessage() {
+  const typing = document.getElementById("typingBubble");
+  if (typing) typing.remove();
 }

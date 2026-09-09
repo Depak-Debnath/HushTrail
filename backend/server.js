@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { planTrip } = require("./geminiService");
+const { planTrip, askTripAssistant } = require("./geminiService");
 
 const app = express();
 
@@ -23,6 +23,24 @@ app.post("/api/plan-trip", async (req, res) => {
   } catch (error) {
     console.error("Gemini error:", error);
     res.status(500).json({ error: "Failed to generate trip plan. Please try again." });
+  }
+});
+
+
+
+app.post("/api/trip-assistant", async (req, res) => {
+  const { tripPlan, question, history } = req.body;
+
+  if (!tripPlan || !question) {
+    return res.status(400).json({ error: "Missing trip plan or question." });
+  }
+
+  try {
+    const answer = await askTripAssistant({ tripPlan, question, history });
+    res.json({ answer });
+  } catch (error) {
+    console.error("Trip assistant error:", error);
+    res.status(500).json({ error: "Could not get an answer right now. Try again." });
   }
 });
 

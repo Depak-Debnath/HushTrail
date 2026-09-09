@@ -89,4 +89,31 @@ For localFood specifically:
   return JSON.parse(response.text);
 }
 
-module.exports = { planTrip };
+async function askTripAssistant({ tripPlan, question, history }) {
+  const conversationSoFar = (history || [])
+    .map(h => `${h.role === "user" ? "Traveler" : "Assistant"}: ${h.text}`)
+    .join("\n");
+
+  const prompt = `
+You are a friendly local travel assistant helping a traveler with a trip you already planned.
+
+Here is the full trip plan you generated earlier (in JSON):
+${JSON.stringify(tripPlan)}
+
+${conversationSoFar ? `Conversation so far:\n${conversationSoFar}\n` : ""}
+
+The traveler now asks: "${question}"
+
+Answer helpfully and specifically, referring to the actual places in the trip plan above when relevant.
+Keep your answer conversational and under 100 words. Do not return JSON — just plain text.
+`;
+
+  const response = await ai.models.generateContent({
+    model: MODEL,
+    contents: prompt,
+  });
+
+  return response.text;
+}
+
+module.exports = { planTrip, askTripAssistant };

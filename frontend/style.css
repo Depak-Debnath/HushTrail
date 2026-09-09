@@ -242,3 +242,58 @@ footer {
 
   .spot-header h4 { font-size: 0.95rem; }
 }
+
+
+#assistant {
+  margin-top: 20px;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+#chatMessages {
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chat-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  max-width: 80%;
+  font-size: 0.9rem;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: var(--primary);
+  color: white;
+}
+
+.chat-bubble.assistant {
+  align-self: flex-start;
+  background: #f0f0ec;
+  color: var(--text);
+}
+
+#assistantForm {
+  display: flex;
+  gap: 8px;
+}
+
+#assistantForm input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+}
+
+#assistantForm button {
+  width: auto;
+  margin: 0;
+  padding: 10px 18px;
+}
