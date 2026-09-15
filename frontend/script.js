@@ -20,7 +20,11 @@ tripForm.addEventListener("submit", async (e) => {
   const duration = document.getElementById("duration").value;
   const travelers = document.getElementById("travelers").value;
 
-  // Show loading, hide old results
+    // Show loading, hide old results
+  const submitBtn = tripForm.querySelector("button[type='submit']");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "🔍 Finding gems...";
+
   loadingSection.classList.remove("hidden");
   resultsSection.classList.add("hidden");
 
@@ -48,6 +52,7 @@ tripForm.addEventListener("submit", async (e) => {
       chatHistory = [];
       chatMessages.innerHTML = "";
       assistantSection.classList.remove("hidden");
+      mapLoaded = false; // reset so Map tab reloads pins for the new trip
     }
   } catch (error) {
     resultsSection.innerHTML = `<p>⚠️ Could not connect to the server. Is the backend running?</p>`;
@@ -55,6 +60,8 @@ tripForm.addEventListener("submit", async (e) => {
   } finally {
     loadingSection.classList.add("hidden");
     resultsSection.classList.remove("hidden");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "✨ Discover Hidden Gems";
   }
 });
 
@@ -219,6 +226,9 @@ assistantForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const question = assistantInput.value;
+  const askBtn = assistantForm.querySelector("button");
+  askBtn.disabled = true;
+
   addChatMessage("user", question);
   assistantInput.value = "";
 
@@ -239,10 +249,12 @@ assistantForm.addEventListener("submit", async (e) => {
 
     chatHistory.push({ role: "user", text: question });
     chatHistory.push({ role: "assistant", text: answer });
-  } catch (error) {
+    } catch (error) {
     removeTypingMessage();
     addChatMessage("assistant", "⚠️ Could not reach the server.");
     console.error(error);
+  } finally {
+    askBtn.disabled = false;
   }
 });
 

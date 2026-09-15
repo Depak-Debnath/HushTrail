@@ -241,6 +241,28 @@ footer {
   }
 
   .spot-header h4 { font-size: 0.95rem; }
+
+  .tab-btn {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .tab-panel {
+    max-height: 360px;
+  }
+
+  #mapContainer {
+    height: 300px !important;
+  }
+
+  .chat-bubble {
+    max-width: 90%;
+    font-size: 0.85rem;
+  }
+
+  #assistantForm input {
+    font-size: 0.9rem;
+  }
 }
 
 
@@ -335,4 +357,17 @@ footer {
 
 #mapContainer {
   width: 100%;
+}
+
+#results:not(.hidden), #assistant:not(.hidden) {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+form input:invalid:not(:placeholder-shown) {
+  border-color: #d64545;
 }
